@@ -25,40 +25,6 @@ const fetchAll = async (url) => {
   }
 }
 
-// 使用者輸入「附近停車場」後，等待他傳位置；超過 10 分鐘就失效
-const WAIT_MS = 10 * 60 * 1000
-const waiting = new Map()
-
-export const askParkingLocation = async (event) => {
-  try {
-    waiting.set(event.source.userId, Date.now())
-    await event.reply({
-      type: 'text',
-      text: '請傳送你的位置，我幫你找附近的停車場',
-      quickReply: {
-        items: [
-          {
-            type: 'action',
-            action: {
-              type: 'location',
-              label: '傳送位置',
-            },
-          },
-        ],
-      },
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-// 這位使用者是否正在等停車場查詢的位置；是的話會清除等待狀態
-export const consumeParkingRequest = (userId) => {
-  const time = waiting.get(userId)
-  waiting.delete(userId)
-  return time !== undefined && Date.now() - time < WAIT_MS
-}
-
 export default async (event) => {
   try {
     const [places, spaces] = await Promise.all([fetchAll(PLACES_URL), fetchAll(SPACES_URL)])

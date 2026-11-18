@@ -44,6 +44,16 @@ export default async (event) => {
               label: '附近停車場',
             },
           },
+          {
+            type: 'action',
+            action: {
+              // 使用者點了之後會傳訊息
+              type: 'message',
+              text: '附近公車',
+              // 按鈕文字
+              label: '附近公車',
+            },
+          },
         ],
       },
     })

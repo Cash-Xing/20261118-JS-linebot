@@ -3,7 +3,9 @@ import linebot from 'linebot'
 import commandFarm from './commands/farm.js'
 import commandUbike from './commands/ubike.js'
 import commandWda from './commands/wda.js'
-import commandParking, { askParkingLocation, consumeParkingRequest } from './commands/parking.js'
+import commandParking from './commands/parking.js'
+import commandBus from './commands/bus.js'
+import { askLocation, takeLocationRequest } from './utils/locationRequest.js'
 
 const bot = linebot({
   channelId: process.env.CHANNEL_ID,
@@ -18,11 +20,16 @@ bot.on('message', (event) => {
     } else if (event.message.text === 'wda') {
       commandWda(event)
     } else if (event.message.text === '附近停車場') {
-      askParkingLocation(event)
+      askLocation(event, 'parking', '請傳送你的位置，我幫你找附近的停車場')
+    } else if (event.message.text === '附近公車') {
+      askLocation(event, 'bus', '請傳送你的位置，我幫你找附近的公車站牌')
     }
   } else if (event.message.type === 'location') {
-    if (consumeParkingRequest(event.source.userId)) {
+    const request = takeLocationRequest(event.source.userId)
+    if (request === 'parking') {
       commandParking(event)
+    } else if (request === 'bus') {
+      commandBus(event)
     } else {
       commandUbike(event)
     }
