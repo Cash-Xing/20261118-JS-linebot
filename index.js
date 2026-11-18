@@ -3,6 +3,7 @@ import linebot from 'linebot'
 import commandFarm from './commands/farm.js'
 import commandUbike from './commands/ubike.js'
 import commandWda from './commands/wda.js'
+import commandParking, { askParkingLocation, consumeParkingRequest } from './commands/parking.js'
 
 const bot = linebot({
   channelId: process.env.CHANNEL_ID,
@@ -16,9 +17,15 @@ bot.on('message', (event) => {
       commandFarm(event)
     } else if (event.message.text === 'wda') {
       commandWda(event)
+    } else if (event.message.text === '附近停車場') {
+      askParkingLocation(event)
     }
   } else if (event.message.type === 'location') {
-    commandUbike(event)
+    if (consumeParkingRequest(event.source.userId)) {
+      commandParking(event)
+    } else {
+      commandUbike(event)
+    }
   }
 })
 

@@ -34,6 +34,16 @@ export default async (event) => {
               label: '新北ubike',
             },
           },
+          {
+            type: 'action',
+            action: {
+              // 使用者點了之後會傳訊息
+              type: 'message',
+              text: '附近停車場',
+              // 按鈕文字
+              label: '附近停車場',
+            },
+          },
         ],
       },
     })
